@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abbonamenti</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Aggiungi l'animazione di ingrandimento */
+        .subscription-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        .subscription-card:hover {
+            transform: scale(1.05); /* Ingrandisce il piano di abbonamento */
+        }
+
+        /* Stile per il pop-up */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: #ffffff; /* Colore blu uniforme */
+            padding: 3rem;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            color: rgb(0, 0, 0);
+            position: relative;
+        }
+        .popup-content h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .popup-content .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        .popup-content p {
+            margin-bottom: 1rem;
+        }
+        .popup-content button {
+            margin-top: 1.5rem;
+        }
+
+        /* Aggiungi il bordo per i pulsanti di pagamento */
+        .payment-button {
+            border: 2px solid #ffffff;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .payment-button:hover {
+            background-color: #2e3137;
+        }
+        .payment-button-paypal {
+            background-color: #2c2d2c;
+            color: white;
+        }
+        .payment-button-credit-card {
+            background-color: #2c2d2c;
+            color: white;
+        }
+
+        /* Stile per la X di chiusura */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="max-w-6xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">Scegli il Tuo Piano di Abbonamento</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Piano Base -->
+            <div class="subscription-card bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Piano Base</h2>
+                <p class="text-gray-600 mb-4">Accesso a funzionalità di base, ideale per uso personale.</p>
+                <div class="text-2xl font-bold text-gray-800 mb-4">€9.99/mese</div>
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li>1 Account</li>
+                    <li>Funzionalità limitate</li>
+                </ul>
+                <button class="w-full bg-blue-500 text-white py-2 rounded-full hover:bg-blue-600" onclick="openPopup('Piano Base', '€9.99/mese', 'Accesso a funzionalità di base, ideale per uso personale.')">
+                    Scegli Piano
+                </button>
+            </div>
+
+            <!-- Piano Premium -->
+            <div class="subscription-card bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Piano Premium</h2>
+                <p class="text-gray-600 mb-4">Funzionalità avanzate per professionisti e piccole aziende.</p>
+                <div class="text-2xl font-bold text-gray-800 mb-4">€19.99/mese</div>
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li>5 Account</li>
+                    <li>Funzionalità complete</li>
+                    <li>Assistenza prioritaria</li>
+                </ul>
+                <button class="w-full bg-blue-500 text-white py-2 rounded-full hover:bg-blue-600" onclick="openPopup('Piano Premium', '€19.99/mese', 'Funzionalità avanzate per professionisti e piccole aziende.')">
+                    Scegli Piano
+                </button>
+            </div>
+
+            <!-- Piano Aziendale -->
+            <div class="subscription-card bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Piano Aziendale</h2>
+                <p class="text-gray-600 mb-4">Soluzione personalizzata per aziende e team di grandi dimensioni.</p>
+                <div class="text-2xl font-bold text-gray-800 mb-4">Contattaci per il prezzo</div>
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li>Illimitato Account</li>
+                    <li>Funzionalità avanzate personalizzabili</li>
+                    <li>Supporto dedicato</li>
+                </ul>
+                <button class="w-full bg-blue-500 text-white py-2 rounded-full hover:bg-blue-600" onclick="openPopup('Piano Aziendale', 'Contattaci per il prezzo', 'Soluzione personalizzata per aziende e team di grandi dimensioni.')">
+                    Contattaci
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <!-- X per chiudere -->
+            <span class="close-button" onclick="closePopup()">×</span>
+
+            <h2 id="popup-title"></h2>
+            <div id="popup-description"></div>
+            <div class="price" id="popup-price"></div>
+            <p>Seleziona il metodo di pagamento per procedere:</p>
+            
+            <button class="payment-button payment-button-credit-card" onclick="processPayment('credit-card')">Paga con Carta di Credito</button>
+            <button class="payment-button payment-button-paypal" onclick="processPayment('paypal')">Paga con PayPal</button>
+        </div>
+    </div>
+
+    <script>
+        // Funzione per aprire il pop-up con i dettagli del piano
+        function openPopup(title, price, description) {
+            document.getElementById("popup-title").textContent = title;
+            document.getElementById("popup-price").textContent = price;
+            document.getElementById("popup-description").textContent = description;
+            document.getElementById("popup").style.display = "flex";
+        }
+
+        // Funzione per chiudere il pop-up
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        // Funzione per elaborare il pagamento
+        function processPayment(method) {
+            if (method === 'credit-card') {
+                alert("Pagamento con carta di credito in corso...");
+            } else if (method === 'paypal') {
+                alert("Pagamento con PayPal in corso...");
+            }
+            closePopup(); // Chiude il pop-up dopo il pagamento
+        }
+    </script>
+
+</body>
+</html>
