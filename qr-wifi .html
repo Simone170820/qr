@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore QR WiFi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ebe4e4;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #a73737;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        button {
+            background-color: #31465b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #253648;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #qrcode {
+            margin-top: 20px;
+        }
+
+        #downloadButtons {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #downloadButtons button {
+            background-color: #27394b;
+        }
+
+        #downloadButtons button:hover {
+            background-color: #27394b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Generatore QR Code per WiFi</h2>
+        <input type="text" id="ssid" placeholder="Nome WiFi (SSID)" required>
+        <input type="text" id="password" placeholder="Password" required>
+        <button onclick="generateQR()">Genera QR Code</button>
+
+        <div id="qrcode"></div>
+
+        <div id="downloadButtons">
+            <button onclick="downloadImage()">Scarica Immagine</button>
+            <button onclick="downloadPDF()">Scarica PDF</button>
+        </div>
+    </div>
+
+    <script>
+        function generateQR() {
+            let ssid = document.getElementById("ssid").value;
+            let password = document.getElementById("password").value;
+            
+            if (ssid === "" || password === "") {
+                alert("Inserisci SSID e Password");
+                return;
+            }
+
+            let wifiData = `WIFI:T:WPA;S:${ssid};P:${password};;`;
+
+            document.getElementById("qrcode").innerHTML = ""; 
+            let qr = new QRCode(document.getElementById("qrcode"), {
+                text: wifiData,
+                width: 200,
+                height: 200
+            });
+
+            document.getElementById("downloadButtons").style.display = "block";
+        }
+
+        function downloadImage() {
+            let qrCanvas = document.querySelector("#qrcode canvas");
+            let image = qrCanvas.toDataURL("image/png");
+
+            let link = document.createElement("a");
+            link.href = image;
+            link.download = "wifi_qr.png";
+            link.click();
+        }
+
+        function downloadPDF() {
+            let qrCanvas = document.querySelector("#qrcode canvas");
+            let image = qrCanvas.toDataURL("image/png");
+
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+
+            doc.text("QR Code per il WiFi", 80, 20);
+            doc.addImage(image, "PNG", 50, 30, 100, 100);
+            doc.save("wifi_qr.pdf");
+        }
+    </script>
+
+</body>
+</html>
